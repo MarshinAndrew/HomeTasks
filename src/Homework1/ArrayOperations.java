@@ -123,36 +123,43 @@ public class ArrayOperations {
         return matrixArithmeticOperations(matrix1, matrix2, '-');
     }
 
+
     public static int moneyCount(int[] students) {
 
         int sum = 1;
         int counter = 1;
         int memory = 0;
+        int direction = 0;
 
         for (int i = 0; i < students.length - 1; i++) {
             if (students[i + 1] > students[i]) {
-                if (counter < 1) {
+                if (direction == -1) {
                     if (memory != 0) {
-                        sum = (-counter >= memory) ? sum + (-counter - memory + 1) : sum;
+                        sum = (counter >= memory) ? sum + (counter - memory + 1) : sum;
                     }
                     counter = 1;
                 }
+                direction = 1;
                 counter++;
                 memory = counter;
                 sum += counter;
-            } else {
-                if (students[i + 1] == students[i]) {
-                    if (memory != 0) {
-                        sum = (-counter >= memory) ? sum + (-counter - memory + 1) : sum;
-                        memory = 0;
-                    }
+            }
+            if (students[i + 1] < students[i]) {
+                if (direction == 1) {
                     counter = 0;
                 }
-                if (counter > 1) {
-                    counter = 0;
+                direction = -1;
+                counter++;
+                sum += counter;
+            }
+            if (students[i + 1] == students[i]) {
+                if (memory != 0 && direction == -1) {
+                    sum = (counter >= memory) ? sum + (counter - memory + 1) : sum;
+                    memory = 0;
                 }
-                counter--;
-                sum -= counter;
+                direction = 0;
+                counter = 1;
+                sum++;
             }
         }
         return sum;
