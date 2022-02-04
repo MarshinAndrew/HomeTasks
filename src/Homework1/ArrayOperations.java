@@ -162,6 +162,10 @@ public class ArrayOperations {
                 sum++;
             }
         }
+        if (memory != 0) {
+            sum = (counter >= memory) ? sum + (counter - memory + 1) : sum;
+        }
+
         return sum;
     }
 
