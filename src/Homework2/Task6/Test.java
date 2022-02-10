@@ -14,6 +14,6 @@ public class Test {
         while (longestWordMatcher.find()) {
             longestWord = (longestWordMatcher.group().length() > longestWord.length()) ? longestWordMatcher.group() : longestWord;
         }
-        System.out.println("Longest word is "+longestWord);
+        System.out.println("Longest word is " + longestWord);
     }
 }

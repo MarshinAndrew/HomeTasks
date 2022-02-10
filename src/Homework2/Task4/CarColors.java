@@ -3,7 +3,7 @@ package Homework2.Task4;
 
 public enum CarColors {
 
-    AUDI ("Audi", new String[]{"blue", "red", "green"}),
+    AUDI("Audi", new String[]{"blue", "red", "green"}),
     BMW("BMW", new String[]{"orange", "black", "violet"}),
     KIA("KIA", new String[]{"yellow", "grey", "white"});
 
@@ -15,8 +15,8 @@ public enum CarColors {
         this.colors = colors;
     }
 
-    public static String[] getColors(String carBrand){
-        for ( CarColors car : values()) {
+    public static String[] getColors(String carBrand) {
+        for (CarColors car : values()) {
             if (car.brand.toLowerCase().equals(carBrand.toLowerCase())) {
                 return car.colors;
             }
