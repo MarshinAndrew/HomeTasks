@@ -6,6 +6,7 @@ import java.util.Random;
 public class Factory {
 
     private static final Random RANDOM = new Random();
+    private final int WAIT_TIME = 100;
     private final Map<RobotParts, Integer> robotPartsStorage;
 
     public Factory(Map<RobotParts, Integer> robotPartsStorage) {
@@ -21,7 +22,7 @@ public class Factory {
                     robotPartsStorage.put(robotPart, ++numberOfParts);
                     System.out.println("Parts in storage " + robotPartsStorage);
                     robotPartsStorage.notify();
-                    robotPartsStorage.wait(50);
+                    robotPartsStorage.wait(WAIT_TIME);
                 }
             }
         } catch (InterruptedException ignored) {
