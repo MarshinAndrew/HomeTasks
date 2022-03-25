@@ -1,6 +1,9 @@
 package Homework4.Enums.BusEnums;
 
-public enum BusColors {
+
+import Homework4.Enums.CarInterfaces.CarColors;
+
+public enum BusColors implements CarColors {
     WHITE,
     BLACK,
     WITH_LOGO

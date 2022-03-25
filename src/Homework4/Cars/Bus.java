@@ -3,12 +3,11 @@ package Homework4.Cars;
 
 import Homework4.Enums.*;
 import Homework4.Enums.BusEnums.*;
-import Homework4.Enums.RegularCar.CarColors;
-import Homework4.Enums.RegularCar.CarWheels;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarWheels;
+import Homework4.Exceptions.CarParameterException;
 
-import java.util.Set;
-
-public class Bus extends Car<BusColors, BusModels, BusWheels, BusEngines> {
+public class Bus extends Car {
 
     private final int seatsNumber;
 
@@ -24,6 +23,25 @@ public class Bus extends Car<BusColors, BusModels, BusWheels, BusEngines> {
 
     public int getSeatsNumber() {
         return seatsNumber;
+    }
+
+    @Override
+    public void setColor(CarColors color) throws CarParameterException{
+
+        if(color instanceof BusColors){
+            this.color=color;
+        }else{
+            throw new CarParameterException();
+        }
+    }
+
+    @Override
+    public void setWheelSize(CarWheels wheelSize) throws CarParameterException {
+        if(wheelSize instanceof BusWheels){
+            this.wheelSize=wheelSize;
+        }else{
+            throw new CarParameterException();
+        }
     }
 
     @Override

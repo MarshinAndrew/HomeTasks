@@ -1,24 +1,22 @@
 package Homework4.Service;
 
 import Homework4.Cars.Car;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Exceptions.CarParameterException;
 
-import java.util.Arrays;
-import java.util.HashSet;
 
-
-public class ColorService implements Serviceable {
+public class ColorService implements Serviceable<Car, CarColors>   {
 
     @Override
-    public <T extends Car, V > void makeOperation(T car, V e)  {
+    public void makeOperation (Car car, CarColors color) throws CarParameterException {
 
         if (car == null
-                || e == null) {
+                || color == null) {
             throw new NullPointerException();
         }
 
-        if (!car.getColor().equals(e)) {
-            car.setColor(e);
+        if (!car.getColor().equals(color)) {
+            car.setColor(color);
         }
-
     }
 }

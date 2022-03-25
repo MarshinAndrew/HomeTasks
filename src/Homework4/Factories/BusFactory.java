@@ -1,18 +1,21 @@
 package Homework4.Factories;
 
-
 import Homework4.CarInfo.BusInfo;
 import Homework4.Cars.Bus;
 import Homework4.Cars.Car;
 import Homework4.CarInfo.CarInfo;
 import Homework4.Enums.BusEnums.*;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarEngines;
+import Homework4.Enums.CarInterfaces.CarModels;
+import Homework4.Enums.CarInterfaces.CarWheels;
 import Homework4.Enums.Options;
 import Homework4.Service.ServiceList;
 
 
 import java.util.*;
 
-public class BusFactory extends Factory<Bus, BusModels, BusColors, BusEngines, BusWheels> {
+public class BusFactory extends Factory<Bus> {
 
     public BusFactory(String factoryName, ServiceList services, BusModels[] models, BusColors[] colors,
                       BusEngines[] engines, BusWheels[] wheels) {
@@ -26,7 +29,6 @@ public class BusFactory extends Factory<Bus, BusModels, BusColors, BusEngines, B
                     , new Options[]{Options.values()[new Random().nextInt(Options.values().length)]}
                     , new BusInfo(BusSeats.MEDIUM)));
         }
-
     }
 
     public BusFactory(String factoryName, ServiceList services) {
@@ -35,22 +37,23 @@ public class BusFactory extends Factory<Bus, BusModels, BusColors, BusEngines, B
     }
 
     @Override
-    Car checkCarInStorage(BusModels model, BusColors color, BusEngines engine, BusWheels wheels, Options[] options, CarInfo carInfo) {
+    Car checkCarInStorage(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo) {
 
         Car busInStorage = null;
         int previousChanges = Integer.MAX_VALUE;
-
-        for (Bus bus : storage) {
-            BusInfo busInfo = (BusInfo) carInfo;
-            if (bus.getModel().equals(model)
-                    && bus.getEngineVol().equals(engine)
-                    && bus.getSeatsNumber() == busInfo.getSeatsInfo().getSeatsNumber()) {
-                int currentChanges = findSuitableCar(bus, color, wheels, options);
-                if (currentChanges == 0) {
-                    return bus;
-                } else {
-                    if (currentChanges < previousChanges) {
-                        busInStorage = bus;
+        synchronized (storage) {
+            for (Bus bus : storage) {
+                BusInfo busInfo = (BusInfo) carInfo;
+                if (bus.getModel().equals(model)
+                        && bus.getEngineVol().equals(engine)
+                        && bus.getSeatsNumber() == busInfo.getSeatsInfo().getSeatsNumber()) {
+                    int currentChanges = findSuitableCar(bus, color, wheels, options);
+                    if (currentChanges == 0) {
+                        return bus;
+                    } else {
+                        if (currentChanges < previousChanges) {
+                            busInStorage = bus;
+                        }
                     }
                 }
             }
@@ -59,10 +62,10 @@ public class BusFactory extends Factory<Bus, BusModels, BusColors, BusEngines, B
     }
 
     @Override
-    Car createCar(BusModels model, BusColors color, BusEngines engine, BusWheels wheels, Options[] options, CarInfo carInfo) {
+    Car createCar(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo) {
         int year = getYear();
         BusInfo busInfo = (BusInfo) carInfo;
         BusSeats seatNumber = busInfo.getSeatsInfo();
-        return new Bus(color, model, year, wheels, engine, options, seatNumber);
+        return new Bus((BusColors) color, (BusModels) model, year, (BusWheels) wheels, (BusEngines) engine, options, seatNumber);
     }
 }

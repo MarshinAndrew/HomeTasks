@@ -9,9 +9,12 @@ import Homework4.Cars.Car;
 import Homework4.Cars.RegularCar;
 import Homework4.Cars.Truck;
 import Homework4.Enums.BusEnums.*;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarWheels;
 import Homework4.Enums.Options;
 import Homework4.Enums.RegularCar.*;
 import Homework4.Enums.TruckEnums.*;
+import Homework4.Exceptions.CarParameterException;
 import Homework4.Exceptions.CarValidationException;
 import Homework4.Exceptions.FactoryNotFoundException;
 import Homework4.Factories.BusFactory;
@@ -34,7 +37,7 @@ public class Salon {
     }
 
     public Bus orderBus(BusModels model, BusColors color, BusEngines engine,
-                        BusWheels wheels, BusSeats busSeats, Options... options) throws FactoryNotFoundException, NullPointerException {
+                        BusWheels wheels, BusSeats busSeats, Options... options) throws FactoryNotFoundException {
 
         if (model == null
                 || color == null
@@ -58,7 +61,7 @@ public class Salon {
     }
 
     public Truck orderTuck(TruckModels model, TruckColors color, TruckEngines engine,
-                           TruckWheels wheels, TruckTonnage tonnage, Options... options) throws FactoryNotFoundException, NullPointerException {
+                           TruckWheels wheels, TruckTonnage tonnage, Options... options) throws FactoryNotFoundException {
 
         if (model == null
                 || color == null
@@ -81,18 +84,18 @@ public class Salon {
         throw new FactoryNotFoundException();
     }
 
-    public RegularCar orderRegularCar(CarModels model, CarColors color, CarEngines engine,
-                                      CarWheels wheels, CarDoors carDoors, Options... options) throws FactoryNotFoundException, NullPointerException {
+    public RegularCar orderRegularCar(RegularCarModels model, RegularCarColors color, RegularCarEngines engine,
+                                      RegularCarWheels wheels, RegularCarType regularCarType, Options... options) throws FactoryNotFoundException {
 
         if (model == null
                 || color == null
                 || engine == null
                 || wheels == null
-                || carDoors == null) {
+                || regularCarType == null) {
             throw new NullPointerException();
         }
 
-        CarInfo carInfo = new RegularCarInfo(carDoors);
+        CarInfo carInfo = new RegularCarInfo(regularCarType);
 
         for (Factory factory : factories) {
             if (factory instanceof RegularCarFactory) {
@@ -127,7 +130,7 @@ public class Salon {
         }
     }
 
-    public void serviceRegularCar(RegularCar car, BusColors color, CarWheels carWheels, boolean addOrDeleteOptions, Options... options) {
+    public void serviceRegularCar(RegularCar car, BusColors color, RegularCarWheels regularCarWheels, boolean addOrDeleteOptions, Options... options) {
         if (car == null) {
             throw new NullPointerException();
         }
@@ -136,8 +139,8 @@ public class Salon {
             changeColor(car, color);
         }
 
-        if (carWheels != null) {
-            changeWheels(car, carWheels);
+        if (regularCarWheels != null) {
+            changeWheels(car, regularCarWheels);
         }
 
         if (options != null) {
@@ -171,33 +174,53 @@ public class Salon {
         }
     }
 
-    private <T extends Car> void changeColor(T car, Enum color) {
-
-        services.stream().filter(serviceable -> serviceable instanceof ColorService).findFirst().get().makeOperation(car, color);
+    private void changeColor(Car car, CarColors color) {
+        try {
+            services.stream().filter(serviceable -> serviceable instanceof ColorService).findFirst().get().makeOperation(car, color);
+        } catch (CarParameterException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    private <T extends Car> void changeWheels(T car, Enum wheels) {
+    private void changeWheels(Car car, CarWheels wheels) {
 
-        services.stream().filter(serviceable -> serviceable instanceof WheelService).findFirst().get().makeOperation(car, wheels);
+        try {
+            services.stream().filter(serviceable -> serviceable instanceof WheelService).findFirst().get().makeOperation(car, wheels);
+        } catch (CarParameterException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
-    private <T extends Car> void addOption(T car, Enum... option) {
+    private void addOption(Car car, Options... option) {
 
         Serviceable service = services.stream().filter(serviceable -> serviceable instanceof AddOptionService).findFirst().get();
-        Arrays.stream(option).forEach(o -> service.makeOperation(car, o));
+        Arrays.stream(option).forEach(o -> {
+            try {
+                service.makeOperation(car, o);
+            } catch (CarParameterException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private <T extends Car> void deleteOption(T car, Enum... option) {
+    private void deleteOption(Car car, Options... option) {
 
         Serviceable service = services.stream().filter(serviceable -> serviceable instanceof DeleteOptionService).findFirst().get();
-        Arrays.stream(option).forEach(o -> service.makeOperation(car, o));
+        Arrays.stream(option).forEach(o -> {
+            try {
+                service.makeOperation(car, o);
+            } catch (CarParameterException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    public void addFactory(Factory factory){
+    public void addFactory(Factory factory) {
         factories.add(factory);
     }
 
-    public void removeFactory(Factory factory){
+    public void removeFactory(Factory factory) {
         factories.remove(factory);
     }
 

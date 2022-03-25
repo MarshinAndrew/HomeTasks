@@ -1,6 +1,8 @@
 package Homework4.Enums.BusEnums;
 
-public enum BusModels {
+import Homework4.Enums.CarInterfaces.CarModels;
+
+public enum BusModels implements CarModels {
     VOLVO,
     NEOPLAN,
     IVECO

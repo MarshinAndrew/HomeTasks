@@ -3,18 +3,18 @@ package Homework4.Service;
 import Homework4.Cars.Car;
 import Homework4.Enums.Options;
 
-public class DeleteOptionService implements Serviceable {
+public class DeleteOptionService implements Serviceable<Car, Options> {
 
     @Override
-    public <T extends Car, V> void makeOperation(T car, V e) throws ClassCastException, NullPointerException {
+    public  void makeOperation(Car car, Options option)  {
 
         if (car == null
-                || e == null) {
+                || option == null) {
             throw new NullPointerException();
         }
 
-        if (car.getOptions().contains(e)) {
-            car.removeOption((Options) e);
+        if (car.getOptions().contains(option)) {
+            car.removeOption((Options) option);
         }
     }
 }

@@ -1,23 +1,28 @@
 package Homework4.Cars;
 
+
 import Homework4.Enums.*;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarEngines;
+import Homework4.Enums.CarInterfaces.CarModels;
+import Homework4.Enums.CarInterfaces.CarWheels;
+import Homework4.Exceptions.CarParameterException;
 
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-public abstract class Car<T, V, E, S> {
+public abstract class Car {
 
-    protected T color;
-    protected final V model;
+    protected CarColors color;
+    protected final CarModels model;
     protected final int year;
-    protected E wheelSize;
-    protected final S engineVol;
+    protected CarWheels wheelSize;
+    protected final CarEngines engineVol;
     protected Set<Options> options;
 
-    public Car(T color, V model, int year, E wheelSize, S engineVol, Options[] options) {
+    public Car(CarColors color, CarModels model, int year, CarWheels wheelSize, CarEngines engineVol, Options[] options) {
         this.color = color;
         this.model = model;
         this.year = year;
@@ -31,7 +36,7 @@ public abstract class Car<T, V, E, S> {
 
     }
 
-    public Car(T color, V model, int year, E wheelSize, S engineVol) {
+    public Car(CarColors color, CarModels model, int year, CarWheels wheelSize, CarEngines engineVol) {
         this.color = color;
         this.model = model;
         this.year = year;
@@ -40,31 +45,23 @@ public abstract class Car<T, V, E, S> {
         this.options = new HashSet<>();
     }
 
-    public void setColor(T color) {
-        this.color = color;
-    }
+    public abstract void setColor(CarColors color) throws CarParameterException;
 
-    public void setWheelSize(E wheelSize) {
-        this.wheelSize = wheelSize;
-    }
-
-    public void setOptions(Set<Options> options) {
-        this.options = options;
-    }
+    public abstract void setWheelSize(CarWheels wheelSize) throws CarParameterException;
 
     public void addOption(Options option) {
-        options.add(option);
+        options.add(option) ;
     }
 
     public void removeOption(Options option) {
         options.remove(option);
     }
 
-    public T getColor() {
+    public CarColors getColor() {
         return color;
     }
 
-    public V getModel() {
+    public CarModels getModel() {
         return model;
     }
 
@@ -72,11 +69,11 @@ public abstract class Car<T, V, E, S> {
         return year;
     }
 
-    public E getWheelSize() {
+    public CarWheels getWheelSize() {
         return wheelSize;
     }
 
-    public S getEngineVol() {
+    public CarEngines getEngineVol() {
         return engineVol;
     }
 

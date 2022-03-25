@@ -1,26 +1,45 @@
 package Homework4.Cars;
 
 import Homework4.Enums.*;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarWheels;
 import Homework4.Enums.RegularCar.*;
+import Homework4.Exceptions.CarParameterException;
 
-import java.util.Set;
+public class RegularCar extends Car {
 
-public class RegularCar extends Car<CarColors, CarModels, CarWheels, CarEngines> {
+    private final RegularCarType regularCarType;
 
-    private final CarDoors carDoors;
-
-    public RegularCar(CarColors color, CarModels model, int year, CarWheels wheelSize, CarEngines engineVol, Options[] options, CarDoors carDoors) {
+    public RegularCar(RegularCarColors color, RegularCarModels model, int year, RegularCarWheels wheelSize, RegularCarEngines engineVol, Options[] options, RegularCarType regularCarType) {
         super(color, model, year, wheelSize, engineVol, options);
-        this.carDoors = carDoors;
+        this.regularCarType = regularCarType;
     }
 
-    public RegularCar(CarColors color, CarModels model, int year, CarWheels wheelSize, CarEngines engineVol, CarDoors carDoors) {
+    public RegularCar(RegularCarColors color, RegularCarModels model, int year, RegularCarWheels wheelSize, RegularCarEngines engineVol, RegularCarType regularCarType) {
         super(color, model, year, wheelSize, engineVol);
-        this.carDoors = carDoors;
+        this.regularCarType = regularCarType;
     }
 
-    public CarDoors getCarDoors() {
-        return carDoors;
+    @Override
+    public void setColor(CarColors color) throws CarParameterException {
+        if(color instanceof RegularCarColors){
+            this.color=color;
+        }else{
+            throw new CarParameterException();
+        }
+    }
+
+    @Override
+    public void setWheelSize(CarWheels wheelSize) throws CarParameterException {
+        if(wheelSize instanceof RegularCarWheels){
+            this.wheelSize=wheelSize;
+        }else{
+            throw new CarParameterException();
+        }
+    }
+
+    public RegularCarType getCarDoors() {
+        return regularCarType;
     }
 
     @Override
@@ -32,7 +51,7 @@ public class RegularCar extends Car<CarColors, CarModels, CarWheels, CarEngines>
                 ", wheelSize=" + wheelSize +
                 ", engineVol=" + engineVol +
                 ", options=" + options +
-                ", carDoors=" + carDoors +
+                ", carDoors=" + regularCarType +
                 '}';
     }
 }

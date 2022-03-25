@@ -1,6 +1,9 @@
 package Homework4.Enums.TruckEnums;
 
-public enum TruckColors {
+
+import Homework4.Enums.CarInterfaces.CarColors;
+
+public enum TruckColors implements CarColors {
     WHITE,
     BLACK,
     GREY;

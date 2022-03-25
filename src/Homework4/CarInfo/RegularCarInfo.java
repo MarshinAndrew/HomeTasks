@@ -1,16 +1,16 @@
 package Homework4.CarInfo;
 
-import Homework4.Enums.RegularCar.CarDoors;
+import Homework4.Enums.RegularCar.RegularCarType;
 
 public class RegularCarInfo extends CarInfo{
 
-    private final CarDoors carDoors;
+    private final RegularCarType regularCarType;
 
-    public RegularCarInfo(CarDoors carDoors) {
-        this.carDoors = carDoors;
+    public RegularCarInfo(RegularCarType regularCarType) {
+        this.regularCarType = regularCarType;
     }
 
-    public CarDoors getCarDoors() {
-        return carDoors;
+    public RegularCarType getCarDoors() {
+        return regularCarType;
     }
 }

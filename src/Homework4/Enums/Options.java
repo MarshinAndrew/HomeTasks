@@ -1,6 +1,8 @@
 package Homework4.Enums;
 
-public enum Options {
+import Homework4.Enums.CarInterfaces.CarParameter;
+
+public enum Options implements CarParameter {
     NAVIGATOR,
     CLIMAT_CONTROL,
     ABS,

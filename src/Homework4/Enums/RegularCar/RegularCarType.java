@@ -1,6 +1,6 @@
 package Homework4.Enums.RegularCar;
 
-public enum CarDoors {
+public enum RegularCarType {
     REGULAR,
     SPORT,
     UNIVERSAL

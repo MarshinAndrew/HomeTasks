@@ -3,24 +3,29 @@ package Homework4.Factories;
 
 import Homework4.Cars.Car;
 import Homework4.CarInfo.CarInfo;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarEngines;
+import Homework4.Enums.CarInterfaces.CarModels;
+import Homework4.Enums.CarInterfaces.CarWheels;
 import Homework4.Enums.Options;
+import Homework4.Exceptions.CarParameterException;
 import Homework4.Exceptions.CarValidationException;
 import Homework4.Service.*;
 
 import java.util.*;
 
-public abstract class Factory<T extends Car, W, V, E, S> {
+public abstract class Factory<T extends Car> {
 
     private final List<Serviceable> services;
     protected final List<T> storage;
-    private final Set<W> models;
-    private final Set<V> colors;
-    private final Set<E> engines;
-    private final Set<S> wheels;
+    private final Set<CarModels> models;
+    private final Set<CarColors> colors;
+    private final Set<CarEngines> engines;
+    private final Set<CarWheels> wheels;
     private final String factoryName;
-    protected boolean exactCar;
+    protected boolean exactCarFound;
 
-    public Factory(String factoryName, ServiceList services, W[] models, V[] colors, E[] engines, S[] wheels)
+    public Factory(String factoryName, ServiceList services, CarModels[] models, CarColors[] colors, CarEngines[] engines, CarWheels[] wheels)
             throws NullPointerException {
         if (services == null
                 || models == null
@@ -39,7 +44,7 @@ public abstract class Factory<T extends Car, W, V, E, S> {
         storage = new ArrayList<>();
     }
 
-    public Car orderCar(W model, V color, E engine, S wheels, Options[] options, CarInfo carInfo)
+    public Car orderCar(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo)
             throws CarValidationException, NullPointerException {
         if (model == null
                 || color == null
@@ -52,21 +57,20 @@ public abstract class Factory<T extends Car, W, V, E, S> {
             options = new Options[0];
         }
 
-        Car carInStorage = null;
+        Car carInStorage;
 
         if (orderValidation(model, color, engine, wheels)) {
             carInStorage = checkCarInStorage(model, color, engine, wheels, options, carInfo);
             if (carInStorage != null) {
-                if (!exactCar) {
-                    synchronized (storage) {
-                        storage.remove(carInStorage);
-                    }
-                    serviceCar(carInStorage, color, wheels, options);
-                    return carInStorage;
+                synchronized (storage) {
+                    storage.remove(carInStorage);
                 }
+                if (!exactCarFound) {
+                    serviceCar(carInStorage, color, wheels, options);
+                }
+                exactCarFound = false;
                 return carInStorage;
             } else {
-                exactCar = true;
                 return createCar(model, color, engine, wheels, options, carInfo);
             }
         } else {
@@ -75,16 +79,16 @@ public abstract class Factory<T extends Car, W, V, E, S> {
     }
 
 
-    private boolean orderValidation(W model, V color, E engine, S wheels) {
+    private boolean orderValidation(CarModels model, CarColors color, CarEngines engine, CarWheels wheels) {
         return models.contains(model)
                 && colors.contains(color)
                 && engines.contains(engine)
                 && this.wheels.contains(wheels);
     }
 
-    abstract Car checkCarInStorage(W model, V color, E engine, S wheels, Options[] options, CarInfo carInfo);
+    abstract Car checkCarInStorage(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo);
 
-    protected int findSuitableCar(Car car, V color, S wheels, Options[] options) {
+    protected int findSuitableCar(Car car, CarColors color, CarWheels wheels, Options[] options) {
 
         int changesToDo = 0;
 
@@ -104,32 +108,60 @@ public abstract class Factory<T extends Car, W, V, E, S> {
         return numberOfDifferentOptions;
     }
 
-    private void serviceCar(Car car, V color, S wheels, Options[] options) {
+    private void serviceCar(Car car, CarColors color, CarWheels wheels, Options[] options) {
 
         if (!car.getColor().equals(color)) {
-            services.stream().filter(serviceable -> serviceable instanceof ColorService).findFirst().get().makeOperation(car, color);
+            changeColor(car, color);
         }
 
         if (!car.getWheelSize().equals(wheels)) {
-            services.stream().filter(serviceable -> serviceable instanceof WheelService).findFirst().get().makeOperation(car, wheels);
+            changeWheels(car, wheels);
         }
 
         List<Options> optionsToDelete = car.getOptions().stream().filter(option -> !Arrays.asList(options).contains(option)).toList();
         if (optionsToDelete.size() > 0) {
-            Serviceable serviceToDeleteOptions = services.stream().filter(serviceable -> serviceable instanceof DeleteOptionService)
-                    .findFirst().get();
-            optionsToDelete.stream().forEach(options1 -> serviceToDeleteOptions.makeOperation(car, options1));
+            optionsToDelete.stream().forEach(option -> removeOption(car, option));
         }
 
         List<Options> optionsToAdd = Arrays.stream(options).filter(option -> !car.getOptions().contains(option)).toList();
         if (optionsToAdd.size() > 0) {
-            Serviceable serviceToAddOptions = services.stream().filter(serviceable -> serviceable instanceof AddOptionService)
-                    .findFirst().get();
-            optionsToAdd.stream().forEach(options1 -> serviceToAddOptions.makeOperation(car, options1));
+            optionsToAdd.stream().forEach(option -> addOption(car, option));
         }
     }
 
-    abstract Car createCar(W model, V color, E engine, S wheels, Options[] options, CarInfo carInfo);
+    private void changeColor(Car car, CarColors color) {
+        try {
+            services.stream().filter(serviceable -> serviceable instanceof ColorService).findFirst().get().makeOperation(car, color);
+        } catch (CarParameterException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void changeWheels(Car car, CarWheels wheels) {
+        try {
+            services.stream().filter(serviceable -> serviceable instanceof WheelService).findFirst().get().makeOperation(car, wheels);
+        } catch (CarParameterException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void addOption(Car car, Options option) {
+        try {
+            services.stream().filter(serviceable -> serviceable instanceof AddOptionService).findFirst().get().makeOperation(car, option);
+        } catch (CarParameterException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void removeOption(Car car, Options option) {
+        try {
+            services.stream().filter(serviceable -> serviceable instanceof DeleteOptionService).findFirst().get().makeOperation(car, option);
+        } catch (CarParameterException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    abstract Car createCar(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo);
 
     protected int getYear() {
         Calendar calendar = Calendar.getInstance();

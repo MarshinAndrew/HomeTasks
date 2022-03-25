@@ -40,7 +40,7 @@ public class Main {
         try {
             System.out.println();
             Bus bus = salon1.orderBus(BusModels.NEOPLAN, BusColors.BLACK, BusEngines.BUS_ENGINE_1
-            , BusWheels.R20, BusSeats.MEDIUM, Options.RADIO);
+                    , BusWheels.R20, BusSeats.MEDIUM, Options.RADIO);
             System.out.println(bus + "\n");
             busFactory1.showStorage();
             salon1.serviceBus(bus, null, BusWheels.R25, true, null);
@@ -57,7 +57,7 @@ public class Main {
         try {
             System.out.println();
             Truck truck = salon1.orderTuck(TruckModels.MAZ, TruckColors.WHITE, TruckEngines.TRUCK_ENGINE_2
-                    , TruckWheels.R40, TruckTonnage.REGULAR_LOAD,Options.ABS,Options.RADIO);
+                    , TruckWheels.R40, TruckTonnage.REGULAR_LOAD, Options.ABS, Options.RADIO);
             System.out.println(truck + "\n");
             regularCarFactory1.showStorage();
             salon1.serviceTruck(truck, TruckColors.BLACK, TruckWheels.R30, true, Options.NAVIGATOR);
@@ -72,15 +72,15 @@ public class Main {
         regularCarFactory1.showStorage();
         try {
             System.out.println();
-            RegularCar car = salon1.orderRegularCar(CarModels.VW, CarColors.BLACK, CarEngines.CAR_ENGINE_1
-                    , CarWheels.R15, CarDoors.REGULAR);
+            RegularCar car = salon1.orderRegularCar(RegularCarModels.VW, RegularCarColors.BLACK, RegularCarEngines.CAR_ENGINE_1
+                    , RegularCarWheels.R15, RegularCarType.REGULAR);
             System.out.println(car + "\n");
             regularCarFactory1.showStorage();
             salon1.serviceRegularCar(car, null, null, true, null);
             System.out.println(car + "\n");
-            salon1.serviceRegularCar(car, null, CarWheels.R17, true, Options.NAVIGATOR, Options.RADIO);
+            salon1.serviceRegularCar(car, null, RegularCarWheels.R17, true, Options.NAVIGATOR, Options.RADIO);
             System.out.println(car + "\n");
-            salon1.serviceRegularCar(car, null, CarWheels.R17, false, Options.NAVIGATOR);
+            salon1.serviceRegularCar(car, null, RegularCarWheels.R17, false, Options.NAVIGATOR);
             System.out.println(car + "\n");
         } catch (FactoryNotFoundException e) {
             System.out.println(e.getMessage());
@@ -107,10 +107,6 @@ public class Main {
             System.out.println(e.getMessage());
             System.out.println();
         }
-
-
     }
-
-
 }
 

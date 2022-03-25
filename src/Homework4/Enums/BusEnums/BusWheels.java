@@ -1,6 +1,8 @@
 package Homework4.Enums.BusEnums;
 
-public enum BusWheels {
+import Homework4.Enums.CarInterfaces.CarWheels;
+
+public enum BusWheels implements CarWheels {
     R20,
     R25,
     R28

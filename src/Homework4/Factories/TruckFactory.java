@@ -4,16 +4,17 @@ import Homework4.CarInfo.CarInfo;
 import Homework4.CarInfo.TruckInfo;
 import Homework4.Cars.Car;
 import Homework4.Cars.Truck;
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarEngines;
+import Homework4.Enums.CarInterfaces.CarModels;
+import Homework4.Enums.CarInterfaces.CarWheels;
 import Homework4.Enums.Options;
 import Homework4.Enums.TruckEnums.*;
 import Homework4.Service.ServiceList;
-import Homework4.Service.Serviceable;
 
-
-import java.util.List;
 import java.util.Random;
 
-public class TruckFactory extends Factory<Truck, TruckModels, TruckColors, TruckEngines, TruckWheels> {
+public class TruckFactory extends Factory<Truck> {
 
     public TruckFactory(String factoryName, ServiceList services, TruckModels[] models, TruckColors[] colors,
                         TruckEngines[] engines, TruckWheels[] wheels) {
@@ -34,22 +35,22 @@ public class TruckFactory extends Factory<Truck, TruckModels, TruckColors, Truck
     }
 
     @Override
-    Car checkCarInStorage(TruckModels model, TruckColors color, TruckEngines engine, TruckWheels wheels
-            , Options[] options, CarInfo carInfo) {
+    Car checkCarInStorage(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo) {
         Car truckInStorage = null;
         int previousChanges = Integer.MAX_VALUE;
-
-        for (Truck truck : storage) {
-            TruckInfo truckInfo = (TruckInfo) carInfo;
-            if (truck.getModel().equals(model)
-                    && truck.getEngineVol().equals(engine)
-                    && truck.getTonnage().equals(truckInfo.getTonnage())) {
-                int currentChanges = findSuitableCar(truck, color, wheels, options);
-                if (currentChanges == 0) {
-                    return truck;
-                } else {
-                    if (currentChanges < previousChanges) {
-                        truckInStorage = truck;
+        synchronized (storage) {
+            for (Truck truck : storage) {
+                TruckInfo truckInfo = (TruckInfo) carInfo;
+                if (truck.getModel().equals(model)
+                        && truck.getEngineVol().equals(engine)
+                        && truck.getTonnage().equals(truckInfo.getTonnage())) {
+                    int currentChanges = findSuitableCar(truck, color, wheels, options);
+                    if (currentChanges == 0) {
+                        return truck;
+                    } else {
+                        if (currentChanges < previousChanges) {
+                            truckInStorage = truck;
+                        }
                     }
                 }
             }
@@ -58,11 +59,10 @@ public class TruckFactory extends Factory<Truck, TruckModels, TruckColors, Truck
     }
 
     @Override
-    Car createCar(TruckModels model, TruckColors color, TruckEngines engine, TruckWheels wheels
-            , Options[] options, CarInfo carInfo) {
+    Car createCar(CarModels model, CarColors color, CarEngines engine, CarWheels wheels, Options[] options, CarInfo carInfo) {
         int year = getYear();
         TruckInfo truckInfo = (TruckInfo) carInfo;
         TruckTonnage tonnage = truckInfo.getTonnage();
-        return new Truck(color, model, year, wheels, engine, options, tonnage);
+        return new Truck((TruckColors) color, (TruckModels) model, year, (TruckWheels) wheels, (TruckEngines) engine, options, tonnage);
     }
 }

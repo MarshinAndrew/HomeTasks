@@ -1,11 +1,14 @@
 package Homework4.Cars;
 
+
+import Homework4.Enums.CarInterfaces.CarColors;
+import Homework4.Enums.CarInterfaces.CarWheels;
 import Homework4.Enums.Options;
 import Homework4.Enums.TruckEnums.*;
+import Homework4.Exceptions.CarParameterException;
 
 
-
-public class Truck extends Car<TruckColors, TruckModels, TruckWheels, TruckEngines> {
+public class Truck extends Car {
 
     private final TruckTonnage tonnage;
 
@@ -21,6 +24,24 @@ public class Truck extends Car<TruckColors, TruckModels, TruckWheels, TruckEngin
 
     public TruckTonnage getTonnage() {
         return tonnage;
+    }
+
+    @Override
+    public void setColor(CarColors color) throws CarParameterException {
+        if(color instanceof TruckColors){
+            this.color=color;
+        }else{
+            throw new CarParameterException();
+        }
+    }
+
+    @Override
+    public void setWheelSize(CarWheels wheelSize) throws CarParameterException {
+        if(wheelSize instanceof TruckWheels){
+            this.wheelSize=wheelSize;
+        }else{
+            throw new CarParameterException();
+        }
     }
 
     @Override
